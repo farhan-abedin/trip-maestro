@@ -1,0 +1,67 @@
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='plan.css') }}">
+    <title>Holiday Planner</title>
+</head>
+<body>
+    <header class="planner-header">
+        <h1>Holiday Planner</h1>
+        <a href="/logout" class="small-text">Sign out</a>
+    </header>
+
+    <div class="settings">
+        <h2>
+            <label for="holiday-title">Title:</label>
+            <input type="text" id="holiday-title" name="holiday-title" value="My Holiday" placeholder="Enter a title">
+        </h2>
+        <p class="small-text">
+            First day of the week: 
+            <select name="first-day" id="first-day">
+                <option value="Monday">Monday (Default)</option>
+                <option value="Sunday">Sunday</option>
+            </select>
+        </p>
+    </div>
+
+    <div class="calendar-container">
+        <div class="time-row-header"></div>
+        <div class="day-header">Monday</div>
+        <div class="day-header">Tuesday</div>
+        <div class="day-header">Wednesday</div>
+        <div class="day-header">Thursday</div>
+        <div class="day-header">Friday</div>
+        <div class="day-header">Saturday</div>
+        <div class="day-header">Sunday</div>
+
+        {% for hour in range(7, 23) %}
+            <div class="time-row-header">{{ "%02d:00" | format(hour) }}</div>
+            {% for day in range(7) %}
+            <div class="calendar-cell" data-day="{{ day }}" data-hour="{{ hour }}"></div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    <form action="/save_holiday" method="POST">
+        <input type="hidden" id="calendar-data" name="calendar-data" value="">
+        <button type="submit" class="save-button">Save</button>
+    </form>
+
+    <p class="footer-note">Toggle hidden hours: 11 PM → 7 AM</p>
+
+    <script>
+        // Minimal JavaScript to capture calendar data
+        document.querySelector('.save-button').addEventListener('click', () => {
+            const calendarData = [];
+            document.querySelectorAll('.calendar-cell').forEach(cell => {
+                const day = cell.dataset.day;
+                const hour = cell.dataset.hour;
+                const activity = cell.textContent.trim();
+                if (activity) {
+                    calendarData.push({ day, hour, activity });
+                }
+            });
+            document.getElementById('calendar-data').value = JSON.stringify(calendarData);
+        });
+    </script>
+</body>
+</html>

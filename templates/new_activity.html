@@ -1,0 +1,61 @@
+<html>
+<head>
+    <title>Add Activity</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <div class="planner-header">
+            <a href="{{ url_for('dashboard') }}" class="title-link"><h1>TripMaestro</h1></a>
+        </div>
+        <div class="header-right">
+            <a href="/logout" class="btn-signout">Sign Out</a>
+        </div>
+    </header>
+
+    <a href="/calendar?holidayID={{ holidayID }}" class="back-link">Go back to holiday list</a>
+
+    <div>
+        {% for message in get_flashed_messages() %}
+            <div>{{ message }}</div>
+        {% endfor %}
+    </div>
+
+    <form action="/new_activity" method="POST">
+        <input type="hidden" name="holidayID" value="{{ holidayID }}">
+
+        <!-- Fields to create a new activity -->
+        <div class="form-group">
+            <label for="activity-name">Activity Name:</label>
+            <input type="text" id="activity-name" name="activity_name" placeholder="Enter activity name" required>
+        </div>
+
+        <div class="form-group inline">
+            <label for="activity-date">Date: (optional)</label>
+            <input type="date" id="activity-date" name="activity_date">
+        </div>
+
+        <div class="form-group">
+            <label for="activity-location">Location (optional):</label>
+            <input type="text" id="activity-location" name="activity_location" placeholder="Enter location">
+        </div>
+
+        <div class="form-group">
+            <label for="booking-link">Link to Booking (optional):</label>
+            <input type="url" id="booking-link" name="booking_link" placeholder="Enter a link to booking, include https://www..">
+        </div>
+
+        <div class="form-group">
+            <label for="additional-notes">Notes:</label>
+            <textarea id="additional-notes" name="additional_notes" placeholder="Add any additional notes here"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="activity-cost">Cost (£):</label>
+            <input type="number" id="activity-cost" name="activity_cost" min="0" step="0.01" placeholder="Enter activity cost">
+        </div>
+        
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>

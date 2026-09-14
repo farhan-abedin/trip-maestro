@@ -1,0 +1,53 @@
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Create Holiday</title>
+    <div class="header-right">
+        <a href="/logout" class="btn-signout">Sign Out</a>
+    </div>
+</head>
+<body>
+    <header>
+        <a href="{{ url_for('dashboard') }}" class="planner-header"><h1>TripMaestro</h1></a>
+        <div class="back-to-dashboard">
+            <a href="/dashboard" class="small-text">Back to Dashboard</a>
+        </div>
+    </header>
+    
+    <main class="setup-form">
+        <p class="selected-destination">
+            <strong>Destination:</strong> {{ destination }}
+        </p>
+        <br>
+        <br>
+        <div class="flash-messages">
+            {% for message in get_flashed_messages() %}
+                <div>{{ message }}</div>
+            {% endfor %}
+        </div>
+        <br>
+        <br>
+        <form action="/new_holiday" method="POST">
+            <!-- Hidden input to pass the destination -->
+            <input type="hidden" name="destination" value="{{ destination }}">
+
+            <div class="form-group">
+                <label for="holiday-title">Holiday Title:</label>
+                <input type="text" id="holiday-title" name="holiday-title" placeholder="Enter a title for your holiday" required>
+            </div>
+
+            <div class="form-group">
+                <label for="start-date">Start Date:</label>
+                <input type="date" id="start-date" name="start-date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="end-date">End Date:</label>
+                <input type="date" id="end-date" name="end-date" required>
+            </div>
+
+            <button type="submit" class="save-button">Continue to Planner</button>
+        </form>
+    </main>
+</body>
+</html>

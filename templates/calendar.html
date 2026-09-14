@@ -1,0 +1,202 @@
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Holiday Planner</title>
+</head>
+<body>
+    <header>
+        <div class="planner-header">
+            <a href="{{ url_for('dashboard') }}" class="title-link"><h1>TripMaestro</h1></a>
+        </div>
+        <div class="header-right">
+            <a href="/logout" class="btn-signout">Sign Out</a>
+        </div>
+    </header>
+
+    <div class="settings">
+        <h2>
+            <input type="text" id="holiday-title" name="holiday-title" value="" placeholder="Enter a title to save holiday">
+        </h2>
+    </div>
+
+    <div class="budget-info">
+        <h3>Budget Summary</h3>
+        <p>Total Cost: £{{ "%.2f"|format(total_cost|float) }}</p> <!-- Formats the total cost to 2 decimal places -->
+    </div>
+
+    <div class ="vertical-strip">
+        <div class="activity-buttons">
+            <a href="{{ url_for('new_activity', holidayID=holidayID) }}" class="btn-add-activity">Add New Activity</a>
+            <button id="delete-activity-btn" class="btn-delete-activity">Delete Activity</button>
+        </div>
+
+        <div class="selected-activity">
+            <h2>Currently Selected Activity</h2>
+            <p><strong>Name:</strong> <span id="activity-name">None</span></p>
+            <p><strong>Time:</strong> <span id="activity-time">None</span></p>
+            <p><strong>Location:</strong> <span id="activity-location">None</span></p>
+            <p><strong>Notes:</strong> <span id="activity-notes">None</span></p>
+    </div>
+
+    <div class="activity-palette">
+    {% for activity in activities_list %}
+        <div 
+            class="activity-block" 
+            draggable="true"
+            data-id="{{ activity['id'] }}" 
+            data-name="{{ activity['name'] }}" 
+            data-location="{{ activity['location'] }}" 
+            data-notes="{{ activity['notes'] }}">
+            {{ activity['name'] }}
+        </div>
+    {% endfor %}
+    </div>
+</div>
+
+    <div class="calendar-container">
+        <div class="day-row-header"> </div>
+        {% for hour in range(7, 23) %}
+            <div class="time-slot-header">{{ "%02d:00" | format(hour) }}</div>
+        {% endfor %}
+
+        {% for date in all_dates %}
+            <div class="day-row-header">{{ date }}</div>
+            {% for hour in range(7, 23) %}
+                <div 
+                    class="calendar-cell" 
+                    data-date="{{ date }}" 
+                    data-hour="{{ hour }}" 
+                    data-activity-id="">
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    <form id="save-form" action="/save_calendar" method="POST">
+        <input type="hidden" id="saved-calendar-data" value='{{ calendar_data }}'>
+        <input type="hidden" id="calendar-data" name="calendar-data" value="">
+        <input type="hidden" name="holiday-id" value="{{ holidayID }}">
+        <input type="hidden" id="holiday-title" name="holiday-title" value="">
+        <button type="submit" class="save-button">Save</button>
+    </form>
+
+    <script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedData = JSON.parse(document.getElementById('saved-calendar-data').value); //Gets calendar data
+        
+        savedData.forEach(activity => { //Iterates through each activity
+            const parts = activity.time.split(' ');  // Split into ["Friday,", "2025-04-04", "7:00"]
+            const activityDate = parts[1];  // "2025-04-04"
+            const activityHour = parts[2].split(':')[0];  // "7"
+
+                        //Finds the corresponding cell for that date and time
+            const cells = document.querySelectorAll('.calendar-cell');
+            cells.forEach(cell => {
+                const cellDate = cell.getAttribute('data-date').split(', ')[1];  // Get YYYY-MM-DD
+                const cellHour = cell.getAttribute('data-hour');
+                
+                // If this is the right cell, populate it
+                if (cellDate === activityDate && cellHour === activityHour) {
+                    cell.textContent = activity.name;
+                    cell.setAttribute('data-activity-id', activity.id);
+                    cell.setAttribute('data-name', activity.name);
+                    cell.setAttribute('data-location', activity.location);
+                    cell.setAttribute('data-notes', activity.notes);
+                }
+            });
+        });
+    });
+
+    document.getElementById('save-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    const activities = [];
+    document.querySelectorAll('.calendar-cell').forEach(cell => {
+        const activityId = cell.getAttribute('data-activity-id');
+        if (activityId) {
+            activities.push({
+                activityId: activityId,
+                startTime: `${cell.getAttribute('data-date')} ${cell.getAttribute('data-hour')}:00`
+            });
+        }
+    });
+
+    // Set the form values
+    this.querySelector('#calendar-data').value = JSON.stringify(activities);
+    const titleInput = document.querySelector('input[name="holiday-title"]');
+    if (titleInput) {
+        this.querySelector('#holiday-title').value = titleInput.value;
+    }
+
+    // Submit the form
+    this.submit();
+});
+
+    document.querySelectorAll('.activity-block').forEach(activity => {
+        activity.addEventListener('dragstart', event => {
+            event.dataTransfer.setData('activity-id', activity.getAttribute('data-id'));
+            event.dataTransfer.setData('activity-name', activity.getAttribute('data-name'));
+            event.dataTransfer.setData('activity-location', activity.getAttribute('data-location'));
+            event.dataTransfer.setData('activity-notes', activity.getAttribute('data-notes'));
+        });
+    });
+
+    document.querySelectorAll('.calendar-cell').forEach(cell => { //Select all calendar cells
+        cell.addEventListener('dragover', event => { //Add dragover event listener
+            event.preventDefault(); //Prevents text from being draggable
+        });
+
+        cell.addEventListener('drop', event => {
+            event.preventDefault();
+
+            const activityId = event.dataTransfer.getData('activity-id');
+            const activityName = event.dataTransfer.getData('activity-name');
+            const activityLocation = event.dataTransfer.getData('activity-location');
+            const activityNotes = event.dataTransfer.getData('activity-notes');
+
+            cell.textContent = activityName;
+
+            cell.setAttribute('data-activity-id', activityId);
+            cell.setAttribute('data-name', activityName);
+            cell.setAttribute('data-location', activityLocation);
+            cell.setAttribute('data-notes', activityNotes);
+        });
+        cell.addEventListener('click', () => {
+            document.getElementById('activity-name').textContent = cell.getAttribute('data-name') || 'None';
+            document.getElementById('activity-time').textContent = `${cell.getAttribute('data-hour')}:00`; //$ makes 7 --> 7:00
+            document.getElementById('activity-location').textContent = cell.getAttribute('data-location') || 'None';
+            document.getElementById('activity-notes').textContent = cell.getAttribute('data-notes') || 'None';
+        });
+    });
+
+let deleteMode = false; //Flag toggles whether it click should delete cells
+
+document.getElementById('delete-activity-btn').addEventListener('click', () => {
+    deleteMode = !deleteMode; //Toggles delete mode
+    const calendarCells = document.querySelectorAll('.calendar-cell');
+
+    if (deleteMode) {
+        document.getElementById('delete-activity-btn').textContent = 'Exit Delete Mode';
+
+        calendarCells.forEach(cell => {
+            cell.addEventListener('click', function deleteActivity() {
+                if (deleteMode) {
+                    if (cell.textContent.trim() !== '') {
+                        cell.textContent = ''; //Clears the contents of the cell
+                        cell.removeAttribute('data-activity-id');
+                        cell.removeAttribute('data-name');
+                        cell.removeAttribute('data-location');
+                        cell.removeAttribute('data-notes');
+                    } 
+                }
+            });
+        });
+    } else {
+        document.getElementById('delete-activity-btn').textContent = 'Delete Activity';
+    }
+});
+
+    </script>
+</body>
+</html>

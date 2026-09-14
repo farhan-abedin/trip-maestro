@@ -1,0 +1,188 @@
+/* DASHBOARD CSS
+   ============= 
+   Styles specifically for the dashboard page.
+*/
+
+/* Reset the body for the dashboard layout */
+body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Header styling */
+  .dashboard-header {
+    background: #fff;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .header-left, 
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .header-left h1 {
+    font-size: 1.5rem;
+    margin: 0;
+    color: #444;
+  }
+  
+  /* Main content area */
+  .dashboard-main {
+    width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+  }
+  
+  .dashboard-main p {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    color: #444;
+  }
+  
+  /* Table styling */
+  .destination-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .destination-table thead {
+    background-color: #fafafa;
+  }
+  
+  .destination-table th, 
+  .destination-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+    font-size: 0.95rem;
+    color: #333;
+  }
+  
+  .destination-table th {
+    font-weight: bold;
+  }
+  
+  /* Buttons */
+  .btn-filter, 
+  .btn-signout, 
+  .btn-profile, 
+  .btn-add, 
+  .btn-show-more, 
+  .btn-apply-filters {
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    margin-top: 10px;
+  }
+  
+  /* Specific button styles */
+  .btn-filter {
+    background-color: #e0e0e0;
+    color: #444;
+    margin-bottom: 15px; /* Add some spacing below the Filter button */
+  }
+  .btn-filter:hover {
+    background-color: #ccc;
+  }
+  
+  .btn-signout {
+    background-color: #ff6666;
+    color: #fff;
+  }
+  .btn-signout:hover {
+    background-color: #cc4c4c;
+  }
+  
+  .btn-profile {
+    background-color: #6666ff;
+    color: #fff;
+  }
+  .btn-profile:hover {
+    background-color: #4545cc;
+  }
+  
+  .btn-add {
+    background-color: #007bff;
+    color: #fff;
+  }
+  .btn-add:hover {
+    background-color: #0056b3;
+  }
+  
+  .btn-show-more {
+    background-color: #28a745;
+    color: #fff;
+    margin-top: 20px;
+  }
+  .btn-show-more:hover {
+    background-color: #218838;
+  }
+  
+  .btn-apply-filters {
+    background-color: #28a745;
+    color: #fff;
+    margin-top: 20px;
+  }
+  .btn-apply-filters:hover {
+    background-color: #218838;
+  }
+  
+  /* Filter Panel */
+  .filter-panel {
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .filter-panel h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #444;
+  }
+  
+  .filter-option {
+    margin-bottom: 10px;
+  }
+  
+  .filter-option label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+
+  table {
+    width: 80%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+  }
+  th, td {
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    text-align: left;
+  }
+  .btn-merge {
+    padding: 8px 16px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  .btn-merge:hover {
+    background-color: #218838;
+  }
+  
